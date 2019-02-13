@@ -21,11 +21,11 @@ Your **invoice** folder should contain the following files:
     - invoice.go
 
 **Step 3:** Go back to your terminal and go to the **node** folder. Run the following commands:
-```./startFabric.sh
-npm install
-node enrollAdmin.js
-node registerUser.js
-node app.js```
+```./startFabric.sh```
+```npm install```
+```node enrollAdmin.js```
+```node registerUser.js```
+```node app.js```
 
 **Step 4:** Open **Postman** or **Insomnia** and test the application.
 Create the following requests:
