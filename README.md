@@ -28,26 +28,57 @@ Your **invoice** folder should contain the following files:
 ```node app.js```  
 
 **Step 4:** Open **Postman** or **Insomnia** and test the application.  
-Create the following requests:
+Create the following requests:  
   
 **Request Name:** Raise Invoice  
 **Method:** POST  
 **URL:** localhost:3000/invoice  
+**Arguments**: username  
   
 **Request Name:** Display All Invoice  
 **Method:** GET  
 **URL:** localhost:3000  
+**Arguments**: 
+- username  
+- invoiceid  
+- invoicenumber  
+- billedto  
+- invoicedate  
+- invoiceamount  
+- itemdescription  
+- gr  
+- ispaid  
+- paidamount  
+- isrepaid  
+- repaymentamount  
   
 **Request Name:** Goods Received  
 **Method:** PUT  
 **URL:** localhost:3000/invoice  
+**Arguments**:  
+- invoiceid  
+- gr  
+- username  
   
 **Request Name:** Paid to Supplier  
 **Method:** PUT  
 **URL:** localhost:3000/invoice  
+**Arguments**:  
+- invoiceid  
+- ispaid  
+- username 
   
 **Request Name:** Repaid to Bank  
 **Method:** PUT  
 **URL:** localhost:3000/invoice  
- 
-
+**Arguments**:  
+- invoiceid  
+- isrepaid  
+- username  
+  
+**Request Name:** Audit History  
+**Method:** GET  
+**URL:** localhost:3000/  
+**Arguments**: username  
+<br/>
+Make sure you use form URL encoded for the arguments
