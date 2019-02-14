@@ -24,7 +24,7 @@ Copy the contents of **node** folder to **invoice** folder. Your **invoice** fol
     - go
       - invoice.go
 
-**Step 4:** Go back to your terminal and go to the **node** folder. Run the following commands:  
+**Step 4:** Go back to your terminal and go to the **fabric-samples/invoice/** folder. Run the following commands:  
 ```./startFabric.sh```  
 ```npm install```  
 ```node enrollAdmin.js```  
