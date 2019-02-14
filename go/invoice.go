@@ -45,16 +45,16 @@ type SmartContract struct {
 
 // Define the invoice structure, with 10 properties.  Structure tags are used by encoding/json library
 type Invoice struct {
-	InvoiceNumber   string `json:"invoicenumber"`
-	BilledTo        string `json:"billedto"`
-	InvoiceDate     string `json:"invoicedate"`
-	InvoiceAmount   string `json:"invoiceamount"`
-	ItemDescription string `json:"itemdescription"`
-	GR              string `json:"gr"`
-	IsPaid          string `json:"ispaid"`
-	PaidAmount      string `json:"paidamount"`
-	IsRepaid        string `json:"isrepaid"`
-	RepaymentAmount string `json:"repaymentamount"`
+	InvoiceNumber   string  `json:"invoicenumber"`
+	BilledTo        string  `json:"billedto"`
+	InvoiceDate     string  `json:"invoicedate"`
+	InvoiceAmount   float64 `json:"invoiceamount"`
+	ItemDescription string  `json:"itemdescription"`
+	GR              bool    `json:"gr"`
+	IsPaid          bool    `json:"ispaid"`
+	PaidAmount      float64 `json:"paidamount"`
+	IsRepaid        bool    `json:"isrepaid"`
+	RepaymentAmount float64 `json:"repaymentamount"`
 }
 
 /*
@@ -101,13 +101,13 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 			InvoiceNumber:   "1001",
 			BilledTo:        "IBM",
 			InvoiceDate:     "10FEB2019",
-			InvoiceAmount:   "1000",
+			InvoiceAmount:   1000.00,
 			ItemDescription: "Phone",
-			GR:              "N",
-			IsPaid:          "N",
-			PaidAmount:      "0",
-			IsRepaid:        "N",
-			RepaymentAmount: "0",
+			GR:              false,
+			IsPaid:          false,
+			PaidAmount:      0.00,
+			IsRepaid:        false,
+			RepaymentAmount: 0.00,
 		},
 	}
 
@@ -126,27 +126,31 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 // function for creating invoice
 func (s *SmartContract) createInvoice(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
-	if len(args) != 11 {
+	if len(args) != 6 {
 		return shim.Error("Incorrect number of arguments. Expecting 5")
 	}
 
+	invoiceAmount, _ := strconv.ParseFloat(args[4], 64)
 	// initialize all arguments
+
 	var invoice = Invoice{
 		InvoiceNumber:   args[1],
 		BilledTo:        args[2],
 		InvoiceDate:     args[3],
-		InvoiceAmount:   args[4],
+		InvoiceAmount:   invoiceAmount,
 		ItemDescription: args[5],
-		GR:              args[6],
-		IsPaid:          args[7],
-		PaidAmount:      args[8],
-		IsRepaid:        args[9],
-		RepaymentAmount: args[10]}
+
+		GR:              false,
+		IsPaid:          false,
+		PaidAmount:      0.00,
+		IsRepaid:        false,
+		RepaymentAmount: 0.00,
+	}
 
 	invoiceAsBytes, _ := json.Marshal(invoice)
 	APIstub.PutState(args[0], invoiceAsBytes)
 
-	return shim.Success(nil)
+	return shim.Success(invoiceAsBytes)
 }
 
 // function for displaying all invoice
@@ -207,7 +211,7 @@ func (s *SmartContract) isGoodReceived(APIstub shim.ChaincodeStubInterface, args
 	invoice := Invoice{}
 
 	json.Unmarshal(invoiceAsBytes, &invoice)
-	invoice.GR = args[1]
+	invoice.GR = true
 
 	invoiceAsBytes, _ = json.Marshal(invoice)
 	APIstub.PutState(args[0], invoiceAsBytes)
@@ -225,8 +229,15 @@ func (s *SmartContract) isPaid(APIstub shim.ChaincodeStubInterface, args []strin
 	invoiceAsBytes, _ := APIstub.GetState(args[0])
 	invoice := Invoice{}
 
+	paidAmount, _ := strconv.ParseFloat(args[1], 64)
 	json.Unmarshal(invoiceAsBytes, &invoice)
-	invoice.IsPaid = args[1]
+
+	if paidAmount < invoice.InvoiceAmount {
+		invoice.PaidAmount = paidAmount
+		invoice.IsPaid = true
+	} else {
+		return shim.Error("Paid amount must be always less than the invoice amount.")
+	}
 
 	invoiceAsBytes, _ = json.Marshal(invoice)
 	APIstub.PutState(args[0], invoiceAsBytes)
@@ -244,8 +255,15 @@ func (s *SmartContract) isRepaid(APIstub shim.ChaincodeStubInterface, args []str
 	invoiceAsBytes, _ := APIstub.GetState(args[0])
 	invoice := Invoice{}
 
+	repaymentAmount, _ := strconv.ParseFloat(args[1], 64)
 	json.Unmarshal(invoiceAsBytes, &invoice)
-	invoice.IsRepaid = args[1]
+
+	if repaymentAmount < invoice.RepaymentAmount {
+		invoice.RepaymentAmount = repaymentAmount
+		invoice.IsRepaid = true
+	} else {
+		return shim.Error("Paid amount must be always less than the invoice amount.")
+	}
 
 	invoiceAsBytes, _ = json.Marshal(invoice)
 	APIstub.PutState(args[0], invoiceAsBytes)
@@ -313,3 +331,4 @@ func main() {
 		fmt.Printf("Error creating new Smart Contract: %s", err)
 	}
 }
+

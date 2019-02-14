@@ -106,11 +106,7 @@ app.all('/invoice', function (req, res) {
         newInvoice.push(invoicedate);
         newInvoice.push(invoiceamount);
         newInvoice.push(itemdescription);
-        newInvoice.push(gr);
-        newInvoice.push(ispaid);
-        newInvoice.push(paidamount);
-        newInvoice.push(isrepaid);
-        newInvoice.push(repaymentamount);
+
       }
     } else if (req.method == "PUT") { // run functions if PUT method
       if (gr) {
@@ -336,6 +332,7 @@ function unicodeToChar(text) {
       return String.fromCharCode(parseInt(match.replace(/\\u/g, ''), 16));
     });
 }
+
 
 
 
