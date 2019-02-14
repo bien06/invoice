@@ -5,7 +5,7 @@
 **Operating System**: Ubuntu 18.04 LTS  
   
 ## Setup Network
-**Step 1:** From **blockchain-training-labs** directory, create a new folder named **invoice**. If not cloned yet, get it from https://github.com/hyperledger/fabric-samples.git  
+**Step 1:** From **fabric-samples** directory, create a new folder named **invoice**. If not cloned yet, get it from https://github.com/hyperledger/fabric-samples.git  
 **Step 2:** Open terminal and clone the repository using the command  
 ```git clone https://github.com/bien06/invoice.git```  
 
